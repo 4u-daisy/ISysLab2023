@@ -41,6 +41,13 @@ public class Employee : BasePerson
     public string JobTitle { get; set; } = String.Empty;
 
     /// <summary>
+    /// Internal employee code. It is unique. 
+    /// It is required to identify a specific employee.
+    /// The default value is -1
+    /// </summary>
+    public int CodeEmployee { get; set; } = -1;
+
+    /// <summary>
     /// Id of the employee's supervisor
     /// </summary>
     public string? IdHeadManager { get; set; }
@@ -64,7 +71,9 @@ public class Employee : BasePerson
     public Status Status { get; set; } = Status.Active;
 
     /// <summary>
-    /// A field that implements a many-to-many relationship with the Project class
+    /// A field that implements a many-to-many relationship 
+    /// with the Project class
     /// </summary>
-    public ICollection<EmployeeProjects>? EmployeeProjects { get; set; } = new List<EmployeeProjects>();
+    public ICollection<EmployeeProjects>? EmployeeProjects { get; set; } 
+        = new List<EmployeeProjects>();
 }

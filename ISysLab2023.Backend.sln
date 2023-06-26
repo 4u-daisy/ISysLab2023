@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISysLab2023.Backend.Lib.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISysLab2023.Backend.Lib.DataBase", "ISysLab2023.Backend.Lib.DataBase\ISysLab2023.Backend.Lib.DataBase.csproj", "{ED632A65-349F-47B3-BED7-A3B9C960FED5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISysLab2023.Backend.Lib.Core", "ISysLab2023.Backend.Lib.Core\ISysLab2023.Backend.Lib.Core.csproj", "{CE13FFC9-7AE4-448C-9EBA-AC1CBBE23732}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{ED632A65-349F-47B3-BED7-A3B9C960FED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED632A65-349F-47B3-BED7-A3B9C960FED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED632A65-349F-47B3-BED7-A3B9C960FED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE13FFC9-7AE4-448C-9EBA-AC1CBBE23732}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE13FFC9-7AE4-448C-9EBA-AC1CBBE23732}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE13FFC9-7AE4-448C-9EBA-AC1CBBE23732}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE13FFC9-7AE4-448C-9EBA-AC1CBBE23732}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,10 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.19" />
+    <PackageReference Include="FluentValidation" Version="11.5.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ISysLab2023.Backend.Lib.DataBase\ISysLab2023.Backend.Lib.DataBase.csproj" />
     <ProjectReference Include="..\ISysLab2023.Backend.Lib.Domain\ISysLab2023.Backend.Lib.Domain.csproj" />
   </ItemGroup>
 

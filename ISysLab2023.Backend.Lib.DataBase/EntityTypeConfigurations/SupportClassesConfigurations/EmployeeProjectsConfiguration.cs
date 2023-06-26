@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ISysLab2023.Backend.Lib.DataBase.EntityTypeConfigurations.SupportClassesConfigurations;
-public class SupportClassConfiguration : IEntityTypeConfiguration<EmployeeProjects>
+public class EmployeeProjectsConfiguration : IEntityTypeConfiguration<EmployeeProjects>
 {
     public void Configure(EntityTypeBuilder<EmployeeProjects> builder)
     {

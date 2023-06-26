@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ISysLab2023.Backend.Lib.DataBase.EntityTypeConfigurations.PersonConfiguration;
 
-public class EmployeeConfiguration : BasePersonConfiguration, 
+public class EmployeeConfiguration : BasePersonConfiguration,
     IEntityTypeConfiguration<Employee>
 {
     public void Configure(EntityTypeBuilder<Employee> builder)
@@ -12,5 +12,11 @@ public class EmployeeConfiguration : BasePersonConfiguration,
         builder
             .Property(x => x.JobTitle)
             .HasMaxLength(63);
+        builder
+            .HasIndex(x => x.CodeEmployee)
+            .IsUnique(true);
+        builder
+            .Property(x => x.CodeEmployee)
+            .ValueGeneratedOnAddOrUpdate();
     }
 }
