@@ -6,7 +6,7 @@ public class EmployeeValidator : AbstractValidator<Employee>
 {
     public EmployeeValidator()
     {
-        RuleFor(x => x.CodeEmployee).NotEmpty()
+        RuleFor(x => x.EmployeeCode).NotEmpty()
             .WithMessage("The CodeEmployee field cannot be empty");
     }
 }

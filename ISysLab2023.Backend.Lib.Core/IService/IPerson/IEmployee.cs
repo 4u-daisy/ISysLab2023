@@ -12,34 +12,37 @@ public interface IEmployee
 {
     // TO DO add pagination
 
+    #region BasicQueries
     ICollection<Employee>? GetEmployees();
     Task<ICollection<Employee>>? GetEmployeesAsync();
 
-    Employee? GetEmployeeByCode(int codeEmployee);
-    Task<Employee>? GetEmployeeByCodeAsync(int codeEmployee);
+    Employee? GetEmployeeByCode(int employeeCode);
+    Task<Employee>? GetEmployeeByCodeAsync(int employeeCode);
 
-    ICollection<Project>? GetProject(int codeEmployee);
-    Task<ICollection<Project>>? GetProjectsAsync(int codeEmployee);
+    ICollection<Project>? GetProject(int employeeCode);
+    Task<ICollection<Project>>? GetProjectsAsync(int employeeCode);
 
-    bool ParticipatesInProject(string projectCode, int codeEmployee);
-    Task<bool> ParticipatesInProjectAsync(string projectCode, int codeEmployee);
+    bool EmployeeExists(int employeeCode);
+    Task<bool> EmployeeExistsAsync(int employeeCode);
 
-    bool EmployeeExists(int codeEmployee);
-    Task<bool> EmployeeExistsAsync(int codeEmployee);
+    bool ParticipatesInProject(string projectCode, int employeeCode);
+    Task<bool> ParticipatesInProjectAsync(string projectCode, int employeeCode);
 
-    ICollection<Employee>? GetSubEmployees(int codeEmployee);
-    Task<ICollection<Employee>>? GetSubEmployeesAsync(int codeEmployee);
+    ICollection<Employee>? GetSubEmployees(int employeeCode);
+    Task<ICollection<Employee>>? GetSubEmployeesAsync(int employeeCode);
+
+    #endregion BasicQueries
 
     #region CRUD
 
     bool CreateEmployee(Employee employee);
     bool UpdateEmployee(Employee employee);
-    bool DeleteEmployee(int codeEmployee);
+    bool DeleteEmployee(int employeeCode);
     bool Save();
 
     Task<bool> CreateEmployeeAsync(Employee employee);
     Task<bool> UpdateEmployeeAsync(Employee employee);
-    Task<bool> DeleteEmployeeAsync(int codeEmployee);
+    Task<bool> DeleteEmployeeAsync(int employeeCode);
     Task<bool> SaveAsync();
 
     #endregion CRUD

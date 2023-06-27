@@ -13,10 +13,10 @@ public class EmployeeConfiguration : BasePersonConfiguration,
             .Property(x => x.JobTitle)
             .HasMaxLength(63);
         builder
-            .HasIndex(x => x.CodeEmployee)
+            .HasIndex(x => x.EmployeeCode)
             .IsUnique(true);
         builder
-            .Property(x => x.CodeEmployee)
+            .Property(x => x.EmployeeCode)
             .ValueGeneratedOnAddOrUpdate();
     }
 }

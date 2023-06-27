@@ -45,7 +45,7 @@ public class Employee : BasePerson
     /// It is required to identify a specific employee.
     /// The default value is -1
     /// </summary>
-    public int CodeEmployee { get; set; } = -1;
+    public int EmployeeCode { get; set; } = -1;
 
     /// <summary>
     /// Id of the employee's supervisor

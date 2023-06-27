@@ -5,6 +5,10 @@ using ISysLab2023.Backend.Lib.Domain.Person;
 using Microsoft.EntityFrameworkCore;
 
 namespace ISysLab2023.Backend.Lib.Core.Repository.OrganizationRepository;
+/// <summary>
+/// Provides an interface implementation 
+/// for working with the Department 
+/// </summary>
 public class DepartmentRepository : IDepartment
 {
     private readonly DataBaseContext _dbContext;
@@ -13,38 +17,7 @@ public class DepartmentRepository : IDepartment
         _dbContext = dbContext;
     }
 
-    public bool CreateDepartment(Department department)
-    {
-        _dbContext.Departments.Add(department);
-        return Save();
-    }
-
-    public async Task<bool> CreateDepartmentAsync(Department department)
-    {
-        await _dbContext.Departments.AddAsync(department);
-        return await SaveAsync();
-    }
-
-    public bool DeleteDepartment(string subdivisionCode)
-    {
-        var department = _dbContext.Departments
-            .FirstOrDefault(x => x.SubdivisionCode == subdivisionCode);
-        if (department == null)
-            return false;
-        _dbContext.Departments.Remove(department);
-        return Save();
-    }
-
-    public async Task<bool> DeleteDepartmentAsync(string subdivisionCode)
-    {
-        var department = await _dbContext.Departments
-            .FirstOrDefaultAsync(x => x.SubdivisionCode == subdivisionCode);
-        if (department == null)
-            return false;
-        _dbContext.Departments.Remove(department);
-        return await SaveAsync();
-    }
-
+    #region BasicQueries
     public bool DepartmentExists(string subdivisionCode) =>
         _dbContext.Departments
         .FirstOrDefault(x => x.SubdivisionCode == subdivisionCode) == null ? 
@@ -78,12 +51,47 @@ public class DepartmentRepository : IDepartment
         await _dbContext.Employees
         .Where(x => x.Department.SubdivisionCode == subdivisionCode)
         .ToListAsync();
+    #endregion BasicQueries
+
+    #region CRUD
 
     public bool Save() =>
         _dbContext.SaveChanges() > 0 ? true : false;
 
     public async Task<bool> SaveAsync() =>
         await _dbContext.SaveChangesAsync() > 0 ? true : false;
+
+    public bool CreateDepartment(Department department)
+    {
+        _dbContext.Departments.Add(department);
+        return Save();
+    }
+
+    public async Task<bool> CreateDepartmentAsync(Department department)
+    {
+        await _dbContext.Departments.AddAsync(department);
+        return await SaveAsync();
+    }
+
+    public bool DeleteDepartment(string subdivisionCode)
+    {
+        var department = _dbContext.Departments
+            .FirstOrDefault(x => x.SubdivisionCode == subdivisionCode);
+        if (department == null)
+            return false;
+        _dbContext.Departments.Remove(department);
+        return Save();
+    }
+
+    public async Task<bool> DeleteDepartmentAsync(string subdivisionCode)
+    {
+        var department = await _dbContext.Departments
+            .FirstOrDefaultAsync(x => x.SubdivisionCode == subdivisionCode);
+        if (department == null)
+            return false;
+        _dbContext.Departments.Remove(department);
+        return await SaveAsync();
+    }
 
     public bool UpdateDepartment(Department department)
     {
@@ -96,4 +104,5 @@ public class DepartmentRepository : IDepartment
         _dbContext.Departments.Update(department);
         return await SaveAsync();
     }
+    #endregion CRUD
 }

@@ -1,57 +1,121 @@
 ﻿using ISysLab2023.Backend.Lib.Core.IService.IWorkingProject;
+using ISysLab2023.Backend.Lib.Core.Repository.SupportClassesRepository;
+using ISysLab2023.Backend.Lib.DataBase.DBContext;
 using ISysLab2023.Backend.Lib.Domain.Person;
 using ISysLab2023.Backend.Lib.Domain.WorkingProjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISysLab2023.Backend.Lib.Core.Repository.WorkingProjectRepository;
+/// <summary>
+/// Provides an implementation of the interface for 
+/// interaction with the project
+/// </summary>
 public class ProjectRepository : IProject
 {
-    public ICollection<Employee>? GetAllEmployeesInProject(string projectCode)
+    private readonly DataBaseContext _dbContext;
+    public ProjectRepository(DataBaseContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
     }
 
-    public Task<ICollection<Employee>> GetAllEmployeesInProjectAsync(string projectCode)
+    #region BasicQueries
+    public ICollection<Employee>? GetAllEmployeesInProject
+        (string projectCode) =>
+        new EmployeeProjectsRepository(_dbContext)
+        .GetAllEmployeesInProject(projectCode);
+
+    public async Task<ICollection<Employee>> GetAllEmployeesInProjectAsync
+        (string projectCode) =>
+        await new EmployeeProjectsRepository(_dbContext)
+        .GetAllEmployeesInProjectAsync(projectCode);
+
+    public Project? GetProjectByCode(string projectCode) =>
+        _dbContext.Projects.FirstOrDefault(x => x.ProjectCode == projectCode);
+
+    public async Task<Project>? GetProjectByCodeAsync
+        (string projectCode) =>
+        await _dbContext.Projects
+        .FirstOrDefaultAsync(x => x.ProjectCode == projectCode);
+
+    public ICollection<Project>? GetProjects() =>
+        _dbContext.Projects.ToList();
+
+    public async Task<ICollection<Project>>? GetProjectsAsync() =>
+        await _dbContext.Projects.ToListAsync();
+
+    public bool ParticipatesInProject(string projectCode, int employeeCode) =>
+        new EmployeeProjectsRepository(_dbContext)
+        .ParticipatesInProject(projectCode, employeeCode);
+
+    public async Task<bool> ParticipatesInProjectAsync
+        (string projectCode, int employeeCode) =>
+        await new EmployeeProjectsRepository(_dbContext)
+        .ParticipatesInProjectAsync(projectCode, employeeCode);
+
+    public bool ProjectExists(string projectCode) =>
+        _dbContext.Projects
+        .FirstOrDefault(x => x.ProjectCode == projectCode) == null ? 
+        false : true;
+
+    public async Task<bool> ProjectExistsAsync(string projectCode) =>
+        await _dbContext.Projects
+        .FirstOrDefaultAsync(x => x.ProjectCode == projectCode) == null ?
+        false : true;
+
+    #endregion BasicQueries
+
+    #region CRUD
+
+    public bool Save() =>
+        _dbContext.SaveChanges() > 0 ? true : false;
+
+    public async Task<bool> SaveAsync() =>
+        await _dbContext.SaveChangesAsync() > 0 ? true : false;
+
+    public bool CreateProject(Project project)
     {
-        throw new NotImplementedException();
+        _dbContext.Projects.Add(project);
+        return Save();
     }
 
-    public Project? GetProjectByCode(string code)
+    public async Task<bool> CreateProjectAsync(Project project)
     {
-        throw new NotImplementedException();
+        _dbContext.Projects.Add(project);
+        return await SaveAsync();
     }
 
-    public Task<Project>? GetProjectByCodeAsync(string code)
+    public bool DeleteProject(string projectCode)
     {
-        throw new NotImplementedException();
+        var project = _dbContext.Projects
+            .FirstOrDefault(x => x.ProjectCode == projectCode);
+        if (project == null)
+            return false;
+
+        _dbContext.Projects.Remove(project);
+        return Save();
     }
 
-    public ICollection<Project>? GetProjects()
+    public async Task<bool> DeleteProjectAsync(string projectCode)
     {
-        throw new NotImplementedException();
+        var project = await _dbContext.Projects
+            .FirstOrDefaultAsync(x => x.ProjectCode == projectCode);
+        if (project == null)
+            return false;
+
+        _dbContext.Projects.Remove(project);
+        return await SaveAsync();
     }
 
-    public Task<ICollection<Project>>? GetProjectsAsync()
+    public bool UpdateProject(Project project)
     {
-        throw new NotImplementedException();
+        _dbContext.Projects.Update(project);
+        return Save();
     }
 
-    public bool ParticipatesInProject(string projectCode, int codeEmployee)
+    public async Task<bool> UpdateProjectAsync(Project project)
     {
-        throw new NotImplementedException();
+        _dbContext.Projects.Update(project);
+        return await SaveAsync();
     }
-
-    public Task<bool> ParticipatesInProjectAsync(string projectCode, int codeEmployee)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool ProjectExists(string code)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool ProjectExistsAsync(string code)
-    {
-        throw new NotImplementedException();
-    }
+    #endregion CRUD
 }

@@ -11,6 +11,7 @@ public interface IDepartment
 {
     // TO DO add pagination
 
+    #region BasicQueries
     ICollection<Department>? GetDepartments();
     Task<ICollection<Department>>? GetDepartmentsAsync();
 
@@ -22,6 +23,8 @@ public interface IDepartment
 
     ICollection<Employee>? GetEmployees(string subdivisionCode);
     Task<ICollection<Employee>>? GetEmployeesAsync(string subdivisionCode);
+
+    #endregion BasicQueries
 
     #region CRUD
 
