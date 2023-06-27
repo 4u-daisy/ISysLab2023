@@ -8,7 +8,7 @@ public class EmployeeProjectsConfiguration : IEntityTypeConfiguration<EmployeePr
     public void Configure(EntityTypeBuilder<EmployeeProjects> builder)
     {
         builder
-            .HasAlternateKey(x => x.IdProject + x.IdEmployee);
+            .HasKey(x => x.Key);
 
         builder
             .HasOne(x => x.Employee)

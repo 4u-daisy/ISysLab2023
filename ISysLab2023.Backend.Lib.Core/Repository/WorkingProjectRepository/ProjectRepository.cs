@@ -1,5 +1,8 @@
-﻿using ISysLab2023.Backend.Lib.Core.IService.IWorkingProject;
+﻿using FluentValidation;
+using ISysLab2023.Backend.Lib.Core.IService.IPerson;
+using ISysLab2023.Backend.Lib.Core.IService.IWorkingProject;
 using ISysLab2023.Backend.Lib.Core.Repository.SupportClassesRepository;
+using ISysLab2023.Backend.Lib.Core.Validator.WorkingProjectValidator;
 using ISysLab2023.Backend.Lib.DataBase.DBContext;
 using ISysLab2023.Backend.Lib.Domain.Person;
 using ISysLab2023.Backend.Lib.Domain.WorkingProjects;
@@ -13,9 +16,12 @@ namespace ISysLab2023.Backend.Lib.Core.Repository.WorkingProjectRepository;
 public class ProjectRepository : IProject
 {
     private readonly DataBaseContext _dbContext;
-    public ProjectRepository(DataBaseContext dbContext)
+    private readonly ProjectValidator _validator;
+    public ProjectRepository(DataBaseContext dbContext, 
+        ProjectValidator validator)
     {
         _dbContext = dbContext;
+        _validator = validator;
     }
 
     #region BasicQueries
@@ -74,12 +80,14 @@ public class ProjectRepository : IProject
 
     public bool CreateProject(Project project)
     {
+        _validator.ValidateAndThrow(project);
         _dbContext.Projects.Add(project);
         return Save();
     }
 
     public async Task<bool> CreateProjectAsync(Project project)
     {
+        await _validator.ValidateAndThrowAsync(project);
         _dbContext.Projects.Add(project);
         return await SaveAsync();
     }
@@ -108,12 +116,14 @@ public class ProjectRepository : IProject
 
     public bool UpdateProject(Project project)
     {
+        _validator.ValidateAndThrow(project);
         _dbContext.Projects.Update(project);
         return Save();
     }
 
     public async Task<bool> UpdateProjectAsync(Project project)
     {
+        await _validator.ValidateAndThrowAsync(project);
         _dbContext.Projects.Update(project);
         return await SaveAsync();
     }

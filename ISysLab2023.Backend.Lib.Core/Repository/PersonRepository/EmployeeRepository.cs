@@ -1,7 +1,10 @@
-﻿using ISysLab2023.Backend.Lib.Core.IService.IPerson;
+﻿using FluentValidation;
+using ISysLab2023.Backend.Lib.Core.IService.IPerson;
 using ISysLab2023.Backend.Lib.Core.IService.ISupportClasses;
 using ISysLab2023.Backend.Lib.Core.Repository.SupportClassesRepository;
+using ISysLab2023.Backend.Lib.Core.Validator.PersonValidator;
 using ISysLab2023.Backend.Lib.DataBase.DBContext;
+using ISysLab2023.Backend.Lib.Domain.Organization;
 using ISysLab2023.Backend.Lib.Domain.Person;
 using ISysLab2023.Backend.Lib.Domain.WorkingProjects;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +17,12 @@ namespace ISysLab2023.Backend.Lib.Core.Repository.PersonRepository;
 public class EmployeeRepository : IEmployee
 {
     private readonly DataBaseContext _dbContext;
-    public EmployeeRepository(DataBaseContext dbContext)
+    private readonly EmployeeValidator _validator;
+    public EmployeeRepository(DataBaseContext dbContext, 
+        EmployeeValidator validator)
     {
         _dbContext = dbContext;
+        _validator = validator;
     }
 
     #region BasicQueries
@@ -81,12 +87,14 @@ public class EmployeeRepository : IEmployee
 
     public bool CreateEmployee(Employee employee)
     {
+        _validator.ValidateAndThrow(employee);
         _dbContext.Employees.Add(employee);
         return Save();
     }
 
     public async Task<bool> CreateEmployeeAsync(Employee employee)
     {
+        await _validator.ValidateAndThrowAsync(employee);
         await _dbContext.Employees.AddAsync(employee);
         return await SaveAsync();
     }
@@ -114,12 +122,16 @@ public class EmployeeRepository : IEmployee
 
     public bool UpdateEmployee(Employee employee)
     {
+        _validator.ValidateAndThrow(employee);
+
         _dbContext.Employees.Update(employee);
         return Save();
     }
 
     public async Task<bool> UpdateEmployeeAsync(Employee employee)
     {
+        await _validator.ValidateAndThrowAsync(employee);
+
         _dbContext.Employees.Update(employee);
         return await SaveAsync();
     }

@@ -1,4 +1,6 @@
-﻿using ISysLab2023.Backend.Lib.Core.IService.IOrganization;
+﻿using FluentValidation;
+using ISysLab2023.Backend.Lib.Core.IService.IOrganization;
+using ISysLab2023.Backend.Lib.Core.Validator.OrganizationValidator;
 using ISysLab2023.Backend.Lib.DataBase.DBContext;
 using ISysLab2023.Backend.Lib.Domain.Organization;
 using ISysLab2023.Backend.Lib.Domain.Person;
@@ -12,9 +14,12 @@ namespace ISysLab2023.Backend.Lib.Core.Repository.OrganizationRepository;
 public class DepartmentRepository : IDepartment
 {
     private readonly DataBaseContext _dbContext;
-    public DepartmentRepository(DataBaseContext dbContext)
+    private readonly DepartmentValidator _validator;
+    public DepartmentRepository(DataBaseContext dbContext, 
+        DepartmentValidator validator)
     {
         _dbContext = dbContext;
+        _validator = validator;
     }
 
     #region BasicQueries
@@ -63,12 +68,14 @@ public class DepartmentRepository : IDepartment
 
     public bool CreateDepartment(Department department)
     {
+        _validator.ValidateAndThrow(department);
         _dbContext.Departments.Add(department);
         return Save();
     }
 
     public async Task<bool> CreateDepartmentAsync(Department department)
     {
+        await _validator.ValidateAndThrowAsync(department);
         await _dbContext.Departments.AddAsync(department);
         return await SaveAsync();
     }
@@ -95,12 +102,15 @@ public class DepartmentRepository : IDepartment
 
     public bool UpdateDepartment(Department department)
     {
+        _validator.ValidateAndThrow(department);
+
         _dbContext.Departments.Update(department);
         return Save();
     }
 
     public async Task<bool> UpdateDepartmentAsync(Department department)
     {
+        await _validator.ValidateAndThrowAsync(department);
         _dbContext.Departments.Update(department);
         return await SaveAsync();
     }
