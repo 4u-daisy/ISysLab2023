@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using ISysLab2023.Backend.Lib.Core.IService.IPerson;
-using ISysLab2023.Backend.Lib.Core.IService.ISupportClasses;
 using ISysLab2023.Backend.Lib.Core.Repository.SupportClassesRepository;
 using ISysLab2023.Backend.Lib.Core.Validator.PersonValidator;
 using ISysLab2023.Backend.Lib.DataBase.DBContext;
@@ -18,17 +17,24 @@ public class EmployeeRepository : IEmployee
 {
     private readonly DataBaseContext _dbContext;
     private readonly EmployeeValidator _validator;
-    public EmployeeRepository(DataBaseContext dbContext, 
+    public EmployeeRepository(DataBaseContext dbContext,
         EmployeeValidator validator)
     {
         _dbContext = dbContext;
         _validator = validator;
     }
 
+    #region idontknow
+    public Department GetIdDepartment(string departmentCode) =>
+        _dbContext.Departments
+        .First(x => x.SubdivisionCode == departmentCode);
+
+    #endregion idontknow
+
     #region BasicQueries
     public bool EmployeeExists(int employeeCode) =>
         _dbContext.Employees
-        .FirstOrDefault(x => x.EmployeeCode == employeeCode) == null ? 
+        .FirstOrDefault(x => x.EmployeeCode == employeeCode) == null ?
         false : true;
     public async Task<bool> EmployeeExistsAsync(int employeeCode) =>
         await _dbContext.Employees

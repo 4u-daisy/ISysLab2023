@@ -15,7 +15,7 @@ public class DepartmentRepository : IDepartment
 {
     private readonly DataBaseContext _dbContext;
     private readonly DepartmentValidator _validator;
-    public DepartmentRepository(DataBaseContext dbContext, 
+    public DepartmentRepository(DataBaseContext dbContext,
         DepartmentValidator validator)
     {
         _dbContext = dbContext;
@@ -25,12 +25,12 @@ public class DepartmentRepository : IDepartment
     #region BasicQueries
     public bool DepartmentExists(string subdivisionCode) =>
         _dbContext.Departments
-        .FirstOrDefault(x => x.SubdivisionCode == subdivisionCode) == null ? 
+        .FirstOrDefault(x => x.SubdivisionCode == subdivisionCode) == null ?
         false : true;
 
     public async Task<bool> DepartmentExistsAsync(string subdivisionCode) =>
         await _dbContext.Departments
-        .FirstOrDefaultAsync(x => x.SubdivisionCode == subdivisionCode) == null ? 
+        .FirstOrDefaultAsync(x => x.SubdivisionCode == subdivisionCode) == null ?
         false : true;
 
     public Department? GetDepartmentByCode(string subdivisionCode) =>
@@ -100,10 +100,12 @@ public class DepartmentRepository : IDepartment
         return await SaveAsync();
     }
 
+    // TODO Dto Model provides a new model without Id.
+    // And the system cannot update a model with a different Id.
+    // I don't know how to do it :(
     public bool UpdateDepartment(Department department)
     {
         _validator.ValidateAndThrow(department);
-
         _dbContext.Departments.Update(department);
         return Save();
     }

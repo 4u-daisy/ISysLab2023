@@ -1,6 +1,4 @@
-﻿using ISysLab2023.Backend.Lib.Domain.Organization;
-using ISysLab2023.Backend.Lib.Domain.Person;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ISysLab2023.Backend.WebApi.ModelsDto.PersonDto;
 

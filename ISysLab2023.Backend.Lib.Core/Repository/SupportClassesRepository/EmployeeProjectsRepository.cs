@@ -73,7 +73,7 @@ public class EmployeeProjectsRepository : IEmployeeProjects
         return Save();
     }
 
-    public async Task<bool> AddEmployeeInProjectAsync(string projectCode, 
+    public async Task<bool> AddEmployeeInProjectAsync(string projectCode,
         int employeeCode)
     {
         var project = await _dbContext.Projects
@@ -103,7 +103,7 @@ public class EmployeeProjectsRepository : IEmployeeProjects
         return await SaveAsync();
     }
 
-    public async Task<bool> AddEmployeeInProjectAsync(Project project, 
+    public async Task<bool> AddEmployeeInProjectAsync(Project project,
         Employee employee)
     {
         if (await _dbContext.Projects.FindAsync(project) == null)

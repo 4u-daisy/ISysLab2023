@@ -74,6 +74,6 @@ public class Employee : BasePerson
     /// A field that implements a many-to-many relationship 
     /// with the Project class
     /// </summary>
-    public ICollection<EmployeeProjects>? EmployeeProjects { get; set; } 
+    public ICollection<EmployeeProjects>? EmployeeProjects { get; set; }
         = new List<EmployeeProjects>();
 }

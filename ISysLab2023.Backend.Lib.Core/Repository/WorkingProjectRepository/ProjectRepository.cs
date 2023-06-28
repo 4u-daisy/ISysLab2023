@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using ISysLab2023.Backend.Lib.Core.IService.IPerson;
 using ISysLab2023.Backend.Lib.Core.IService.IWorkingProject;
 using ISysLab2023.Backend.Lib.Core.Repository.SupportClassesRepository;
 using ISysLab2023.Backend.Lib.Core.Validator.WorkingProjectValidator;
@@ -17,7 +16,7 @@ public class ProjectRepository : IProject
 {
     private readonly DataBaseContext _dbContext;
     private readonly ProjectValidator _validator;
-    public ProjectRepository(DataBaseContext dbContext, 
+    public ProjectRepository(DataBaseContext dbContext,
         ProjectValidator validator)
     {
         _dbContext = dbContext;
@@ -60,7 +59,7 @@ public class ProjectRepository : IProject
 
     public bool ProjectExists(string projectCode) =>
         _dbContext.Projects
-        .FirstOrDefault(x => x.ProjectCode == projectCode) == null ? 
+        .FirstOrDefault(x => x.ProjectCode == projectCode) == null ?
         false : true;
 
     public async Task<bool> ProjectExistsAsync(string projectCode) =>

@@ -15,8 +15,5 @@ public class EmployeeConfiguration : BasePersonConfiguration,
         builder
             .HasIndex(x => x.EmployeeCode)
             .IsUnique(true);
-        builder
-            .Property(x => x.EmployeeCode)
-            .ValueGeneratedOnAddOrUpdate();
     }
 }

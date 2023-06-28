@@ -10,7 +10,10 @@ namespace ISysLab2023.Backend.Lib.Core.IService.IPerson;
 /// </summary>
 public interface IEmployee
 {
-    // TO DO add pagination
+
+    #region idontknow
+    Department GetIdDepartment(string departmentCode);
+    #endregion idontknow
 
     #region BasicQueries
     ICollection<Employee>? GetEmployees();
