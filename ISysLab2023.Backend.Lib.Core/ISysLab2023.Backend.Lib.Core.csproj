@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.5.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ISysLab2023.Backend.Lib.DataBase\ISysLab2023.Backend.Lib.DataBase.csproj" />
     <ProjectReference Include="..\ISysLab2023.Backend.Lib.Domain\ISysLab2023.Backend.Lib.Domain.csproj" />
   </ItemGroup>

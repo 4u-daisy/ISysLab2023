@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using ISysLab2023.Backend.Lib.Core.IService.IWorkingProject;
+﻿using ISysLab2023.Backend.Lib.Core.IService.IWorkingProject;
+using ISysLab2023.Backend.Lib.Core.ModelDto.PersonDto;
+using ISysLab2023.Backend.Lib.Core.ModelDto.WorkingProjectDto;
 using ISysLab2023.Backend.Lib.Domain.WorkingProjects;
-using ISysLab2023.Backend.WebApi.ModelsDto.PersonDto;
-using ISysLab2023.Backend.WebApi.ModelsDto.WorkingProjectDto;
-using ISysLab2023.Backend.WebApi.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISysLab2023.Backend.WebApi.Controllers.WorkingProjectControllers;
@@ -16,20 +14,17 @@ namespace ISysLab2023.Backend.WebApi.Controllers.WorkingProjectControllers;
 public class ProjectController : Controller
 {
     private readonly IProject _repository;
-    private readonly IMapper _mapper;
     private readonly ILogger<Project> _logger;
 
     /// <summary>
     /// Public constructor to create a controller 
     /// </summary>
     /// <param name="repository">Interface repository</param>
-    /// <param name="mapper">Interface mapper</param>
     /// <param name="logger">Interface logger</param>
     public ProjectController(IProject repository,
-        IMapper mapper, ILogger<Project> logger)
+         ILogger<Project> logger)
     {
         _repository = repository;
-        _mapper = mapper;
         _logger = logger;
     }
 
@@ -41,10 +36,8 @@ public class ProjectController : Controller
     /// <param name="pageNumber">Page number, by default 1</param>
     /// <returns>List Project Dto model</returns>
     [HttpGet("GetProjects")]
-    public IEnumerable<ProjectDto> GetProjects(int? pageNumber) =>
-        PagedList<ProjectDto>.Create(
-            _mapper.Map<List<ProjectDto>>(_repository.GetProjects()),
-            pageNumber ?? 1);
+    public IEnumerable<ProjectDto>? GetProjects(int? pageNumber) =>
+        _repository.GetProjects(pageNumber ?? 1);
 
     /// <summary>
     /// Get All Projects on pages Async. 
@@ -52,10 +45,9 @@ public class ProjectController : Controller
     /// <param name="pageNumber">Page number, by default 1</param>
     /// <returns>List Project Dto model</returns>
     [HttpGet("GetProjectsAsync")]
-    public async Task<IEnumerable<ProjectDto>> GetProjectsAsync(int? pageNumber) =>
-        PagedList<ProjectDto>.Create(
-            _mapper.Map<List<ProjectDto>>(await _repository.GetProjectsAsync()),
-            pageNumber ?? 1);
+    public async Task<IEnumerable<ProjectDto>>? GetProjectsAsync(
+        int? pageNumber) =>
+        await _repository.GetProjectsAsync(pageNumber ?? 1);
 
     /// <summary>
     /// Get project by code
@@ -63,9 +55,8 @@ public class ProjectController : Controller
     /// <param name="code">code project</param>
     /// <returns>Project Dto model</returns>
     [HttpGet("GetProjectByCode/{code}")]
-    public ProjectDto GetProjectByCode(string code) =>
-        _mapper.Map<ProjectDto>
-        (_repository.GetProjectByCode(code));
+    public ProjectDto? GetProjectByCode(string code) =>
+        _repository.GetProjectByCode(code);
 
     /// <summary>
     /// Get project by code Async
@@ -73,9 +64,9 @@ public class ProjectController : Controller
     /// <param name="code">code project</param>
     /// <returns>Project Dto model</returns>
     [HttpGet("GetProjectByCodeAsync/{code}")]
-    public async Task<ProjectDto> GetProjectByCodeAsync(string code) =>
-        _mapper.Map<ProjectDto>
-        (await _repository.GetProjectByCodeAsync(code));
+    public async Task<ProjectDto>? GetProjectByCodeAsync(
+        string code) =>
+        await _repository.GetProjectByCodeAsync(code);
 
     /// <summary>
     ///  Get All Employees of project page by page;
@@ -84,11 +75,9 @@ public class ProjectController : Controller
     /// <param name="pageNumber">Page number, by default 1</param>
     /// <returns>List Employee Dto model</returns>
     [HttpGet("GetProjectEmployees/{code}/employees")]
-    public IEnumerable<EmployeeDto> GetProjectEmployees
+    public IEnumerable<EmployeeDto>? GetProjectEmployees
         (string code, int? pageNumber) =>
-        PagedList<EmployeeDto>.Create(
-        _mapper.Map<List<EmployeeDto>>(_repository.GetAllEmployeesInProject(code)),
-        pageNumber ?? 1);
+        _repository.GetAllEmployeesInProject(code, pageNumber ?? 1);
 
     /// <summary>
     ///  Get All Employees of project page by page Async
@@ -99,10 +88,8 @@ public class ProjectController : Controller
     [HttpGet("GetProjectEmployeesAsync/{code}/employees")]
     public async Task<IEnumerable<EmployeeDto>> GetProjectEmployeesAsync
         (string code, int? pageNumber) =>
-        PagedList<EmployeeDto>.Create(
-        _mapper.Map<List<EmployeeDto>>
-            (await _repository.GetAllEmployeesInProjectAsync(code)),
-        pageNumber ?? 1);
+        await _repository.GetAllEmployeesInProjectAsync(
+            code, pageNumber ?? 1);
 
     #endregion BasicQueries
 
@@ -123,8 +110,7 @@ public class ProjectController : Controller
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method CreateProject");
 
-        var project = _mapper.Map<Project>(projectDto);
-        if (!_repository.CreateProject(project))
+        if (!_repository.CreateProject(projectDto))
         {
             ModelState.AddModelError("", "Something went wrong while savin");
             return StatusCode(500, ModelState);
@@ -147,8 +133,7 @@ public class ProjectController : Controller
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method CreateProject");
 
-        var project = _mapper.Map<Project>(projectDto);
-        if (!await _repository.CreateProjectAsync(project))
+        if (!await _repository.CreateProjectAsync(projectDto))
         {
             ModelState.AddModelError("", "Something went wrong while savin");
             return StatusCode(500, ModelState);
@@ -222,8 +207,7 @@ public class ProjectController : Controller
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method UpdateProject");
 
-        var project = _mapper.Map<Project>(projectDto);
-        if (!_repository.UpdateProject(project))
+        if (!_repository.UpdateProject(projectDto))
         {
             ModelState.AddModelError("", "Something went wrong while savin");
             return StatusCode(500, ModelState);
@@ -246,8 +230,7 @@ public class ProjectController : Controller
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method UpdateProjectAsync");
 
-        var project = _mapper.Map<Project>(projectDto);
-        if (!await _repository.UpdateProjectAsync(project))
+        if (!await _repository.UpdateProjectAsync(projectDto))
         {
             ModelState.AddModelError("", "Something went wrong while savin");
             return StatusCode(500, ModelState);

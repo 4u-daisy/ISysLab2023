@@ -1,4 +1,4 @@
-﻿namespace ISysLab2023.Backend.WebApi.Service;
+﻿namespace ISysLab2023.Backend.Lib.Core.Service;
 
 /// <summary>
 /// 
@@ -15,10 +15,12 @@ public sealed class PagedList<T> : List<T>
     /// </summary>
     public int TotalPages { get; set; }
 
+
+    // TODO add configs and secrets
     /// <summary>
     /// 
     /// </summary>
-    public static int PageSize { get; } = Config.PageNumber;
+    public static int PageSize { get; } = 5;
 
     /// <summary>
     /// 
@@ -43,4 +45,5 @@ public sealed class PagedList<T> : List<T>
         var items = source.Skip((pageIndex - 1) * PageSize).Take(PageSize).ToList();
         return new PagedList<T>(items, count, pageIndex);
     }
+
 }

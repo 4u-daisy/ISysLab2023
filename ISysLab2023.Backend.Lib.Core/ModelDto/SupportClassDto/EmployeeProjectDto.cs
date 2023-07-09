@@ -1,5 +1,4 @@
-﻿namespace ISysLab2023.Backend.WebApi.ModelsDto.SupportClass;
-
+﻿namespace ISysLab2023.Backend.Lib.Core.ModelDto.SupportClassDto;
 public class EmployeeProjectDto
 {
     public int EmployeeCode { get; set; }

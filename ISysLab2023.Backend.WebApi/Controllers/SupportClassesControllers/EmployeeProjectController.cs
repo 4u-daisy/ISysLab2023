@@ -1,7 +1,6 @@
-﻿using AutoMapper;
-using ISysLab2023.Backend.Lib.Core.IService.ISupportClasses;
+﻿using ISysLab2023.Backend.Lib.Core.IService.ISupportClasses;
+using ISysLab2023.Backend.Lib.Core.ModelDto.SupportClassDto;
 using ISysLab2023.Backend.Lib.Domain.SupportClasses;
-using ISysLab2023.Backend.WebApi.ModelsDto.SupportClass;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISysLab2023.Backend.WebApi.Controllers.SupportClassesControllers;
@@ -13,21 +12,18 @@ namespace ISysLab2023.Backend.WebApi.Controllers.SupportClassesControllers;
 [ApiController]
 public class EmployeeProjectController : Controller
 {
-    private readonly IEmployeeProjects _repository;
-    private readonly IMapper _mapper;
+    private readonly IEmployeeProject _repository;
     private readonly ILogger<EmployeeProjects> _logger;
 
     /// <summary>
     /// Public constructor to create a controller 
     /// </summary>
     /// <param name="repository">Interface repository</param>
-    /// <param name="mapper">Interface mapper</param>
     /// <param name="logger">Interface logger</param>
-    public EmployeeProjectController(IEmployeeProjects repository,
-        IMapper mapper, ILogger<EmployeeProjects> logger)
+    public EmployeeProjectController(IEmployeeProject repository,
+        ILogger<EmployeeProjects> logger)
     {
         _repository = repository;
-        _mapper = mapper;
         _logger = logger;
     }
 
@@ -96,14 +92,16 @@ public class EmployeeProjectController : Controller
         [FromBody] EmployeeProjectDto employeeProjectCodeDto)
     {
         if (!_repository.ParticipatesInProject(
-            employeeProjectCodeDto.ProjectCode, employeeProjectCodeDto.EmployeeCode))
+            employeeProjectCodeDto.ProjectCode,
+            employeeProjectCodeDto.EmployeeCode))
             return NotFound();
 
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method RemoveEmployeeFromProject");
 
         if (!_repository.RemoveEmployeeFromProject(
-            employeeProjectCodeDto.ProjectCode, employeeProjectCodeDto.EmployeeCode) ||
+            employeeProjectCodeDto.ProjectCode,
+            employeeProjectCodeDto.EmployeeCode) ||
             !ModelState.IsValid)
         {
             ModelState.AddModelError("",
@@ -124,14 +122,16 @@ public class EmployeeProjectController : Controller
         [FromBody] EmployeeProjectDto employeeProjectCodeDto)
     {
         if (!await _repository.ParticipatesInProjectAsync(
-            employeeProjectCodeDto.ProjectCode, employeeProjectCodeDto.EmployeeCode))
+            employeeProjectCodeDto.ProjectCode,
+            employeeProjectCodeDto.EmployeeCode))
             return NotFound();
 
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method RemoveEmployeeFromProjectAsync");
 
         if (!await _repository.RemoveEmployeeFromProjectAsync(
-            employeeProjectCodeDto.ProjectCode, employeeProjectCodeDto.EmployeeCode) ||
+            employeeProjectCodeDto.ProjectCode,
+            employeeProjectCodeDto.EmployeeCode) ||
             !ModelState.IsValid)
         {
             ModelState.AddModelError("",
@@ -143,5 +143,30 @@ public class EmployeeProjectController : Controller
     }
 
     #endregion RemoveEmployeeFromProject
+
+    #region ShowEmployeeProjects
+
+    /// <summary>
+    /// Get all EmployeeProjectDto
+    /// </summary>
+    /// <param name="page">Page number, by default 1</param>
+    /// <returns>All EmployeeProjectDto</returns>
+    [HttpGet("ShowEmployeeProjects")]
+    public IEnumerable<EmployeeProjectDto>? ShowEmployeeProjects(
+        int? page = 1) =>
+        _repository.GetAllEmployeeProject(page ?? 1);
+
+    /// <summary>
+    /// Get all EmployeeProjectDto Async
+    /// </summary>
+    /// <param name="page">Page number, by default 1</param>
+    /// <returns>All EmployeeProjectDto</returns>
+    [HttpGet("ShowEmployeeProjectsAsync")]
+    public async Task<IEnumerable<EmployeeProjectDto>>? ShowEmployeeProjectsAsync(
+    int? page = 1) =>
+    await _repository.GetAllEmployeeProjectAsync(page ?? 1);
+
+
+    #endregion ShowEmployeeProjects
 
 }

@@ -1,5 +1,3 @@
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using ISysLab2023.Backend.Lib.Core.IService.IOrganization;
 using ISysLab2023.Backend.Lib.Core.IService.IPerson;
 using ISysLab2023.Backend.Lib.Core.IService.ISupportClasses;
@@ -17,14 +15,10 @@ using System.Reflection;
 // 1. secrets
 // 2. normal summary
 // 3. data annotation for controllers (with result codes)
-// 4. cascade deletion
+// 5. go to postgre
 
-// TODO list of questions
-// 1. Как лучше спроектировать codeEmployee ? Просто по Id небезопасненько
-// 2. Dto маппит с созданием нового объекта (касательно employee, department - новый)
-//      Как лучше сделать ? ай донт ноу :(
-// 3. Как быть с DbContext ? Для миграций он нужен в проекте, но в репозиторий
-//      передается родительский (DataBaseContext) класс
+// ��������� �� �����������
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,13 +31,11 @@ builder.Services.AddDbContextFactory<DataBaseContext>(optionsBuilder
 
 builder.Services.AddControllers();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
 builder.Services
     .AddScoped<IDepartment, DepartmentRepository>()
     .AddScoped<IEmployee, EmployeeRepository>()
     .AddScoped<IProject, ProjectRepository>()
-    .AddScoped<IEmployeeProjects, EmployeeProjectsRepository>();
+    .AddScoped<IEmployeeProject, EmployeeProjectRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -52,11 +44,6 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
 });
 
-builder.Services.AddFluentValidation()
-    .AddValidatorsFromAssembly(typeof(DepartmentRepository).Assembly)
-    .AddValidatorsFromAssembly(typeof(EmployeeRepository).Assembly)
-    .AddValidatorsFromAssembly(typeof(ProjectRepository).Assembly)
-    .AddValidatorsFromAssembly(typeof(EmployeeProjectsRepository).Assembly);
 
 var app = builder.Build();
 

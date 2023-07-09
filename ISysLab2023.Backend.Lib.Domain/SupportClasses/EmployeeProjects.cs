@@ -12,7 +12,7 @@ public class EmployeeProjects
     /// <summary>
     /// Id of Employee
     /// </summary>
-    public string IdEmployee { get; set; } = String.Empty;
+    public Guid IdEmployee { get; set; } = new();
     /// <summary>
     /// Link of Employee
     /// </summary>
@@ -21,7 +21,7 @@ public class EmployeeProjects
     /// <summary>
     /// Id of Project
     /// </summary>
-    public string IdProject { get; set; } = String.Empty;
+    public Guid IdProject { get; set; } = new();
     /// <summary>
     /// Link of Project
     /// </summary>
@@ -31,5 +31,5 @@ public class EmployeeProjects
     /// The key for the supporting table, 
     /// because without it it does not work for me :(
     /// </summary>
-    public string Key { get; set; } = new Guid().ToString();
+    public string Key { get; set; } = String.Empty;
 }

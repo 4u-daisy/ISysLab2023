@@ -1,9 +1,12 @@
 ﻿using FluentValidation;
 using ISysLab2023.Backend.Lib.Core.IService.IPerson;
+using ISysLab2023.Backend.Lib.Core.ModelDto.PersonDto;
+using ISysLab2023.Backend.Lib.Core.ModelDto.WorkingProjectDto;
+using ISysLab2023.Backend.Lib.Core.MyMapping.PersonMapping;
+using ISysLab2023.Backend.Lib.Core.MyMapping.WorkingProjectsMapping;
 using ISysLab2023.Backend.Lib.Core.Repository.SupportClassesRepository;
-using ISysLab2023.Backend.Lib.Core.Validator.PersonValidator;
+using ISysLab2023.Backend.Lib.Core.Service;
 using ISysLab2023.Backend.Lib.DataBase.DBContext;
-using ISysLab2023.Backend.Lib.Domain.Organization;
 using ISysLab2023.Backend.Lib.Domain.Person;
 using ISysLab2023.Backend.Lib.Domain.WorkingProjects;
 using Microsoft.EntityFrameworkCore;
@@ -16,20 +19,10 @@ namespace ISysLab2023.Backend.Lib.Core.Repository.PersonRepository;
 public class EmployeeRepository : IEmployee
 {
     private readonly DataBaseContext _dbContext;
-    private readonly EmployeeValidator _validator;
-    public EmployeeRepository(DataBaseContext dbContext,
-        EmployeeValidator validator)
+    public EmployeeRepository(DataBaseContext dbContext)
     {
         _dbContext = dbContext;
-        _validator = validator;
     }
-
-    #region idontknow
-    public Department GetIdDepartment(string departmentCode) =>
-        _dbContext.Departments
-        .First(x => x.SubdivisionCode == departmentCode);
-
-    #endregion idontknow
 
     #region BasicQueries
     public bool EmployeeExists(int employeeCode) =>
@@ -41,66 +34,101 @@ public class EmployeeRepository : IEmployee
         .FirstOrDefaultAsync(x => x.EmployeeCode == employeeCode) == null ?
         false : true;
 
-    public Employee? GetEmployeeByCode(int employeeCode) =>
-        _dbContext.Employees
-        .FirstOrDefault(x => x.EmployeeCode == employeeCode);
-    public async Task<Employee>? GetEmployeeByCodeAsync(int employeeCode) =>
-        await _dbContext.Employees
-        .FirstOrDefaultAsync(x => x.EmployeeCode == employeeCode);
+    public EmployeeDto? GetEmployeeByCode(int employeeCode) =>
+        EmployeeMapping.Mapping(_dbContext.Employees
+            .Include(x => x.Department)
+        .FirstOrDefault(x => x.EmployeeCode == employeeCode));
+    public async Task<EmployeeDto>? GetEmployeeByCodeAsync(int employeeCode) =>
+        EmployeeMapping.Mapping(await _dbContext.Employees
+            .Include(x => x.Department)
+        .FirstOrDefaultAsync(x => x.EmployeeCode == employeeCode));
 
-    public ICollection<Employee>? GetEmployees() =>
-        _dbContext.Employees.ToList();
-    public async Task<ICollection<Employee>>? GetEmployeesAsync() =>
-        await _dbContext.Employees.ToListAsync();
+    public ICollection<EmployeeDto>? GetEmployees(int page = 1) =>
+        EmployeeMapping.Mapping(PagedList<Employee>
+            .Create(_dbContext.Employees.Include(x => x.Department)
+            .ToList(), page))
+        !.ToList();
+    public async Task<ICollection<EmployeeDto>>? GetEmployeesAsync(
+        int page = 1) =>
+        EmployeeMapping.Mapping(PagedList<Employee>
+            .Create(await _dbContext.Employees.Include(x => x.Department)
+            .ToListAsync(), page))
+        !.ToList();
 
-    public ICollection<Project>? GetProject(int employeeCode) =>
-        _dbContext.EmployeeProjects
-        .Where(x => x.Employee.EmployeeCode == employeeCode)
-        .Select(x => x.Project)
-        .ToList();
-    public async Task<ICollection<Project>>? GetProjectsAsync(int employeeCode) =>
-        await _dbContext.EmployeeProjects
-        .Where(x => x.Employee.EmployeeCode == employeeCode)
-        .Select(x => x.Project)
-        .ToListAsync();
+    public ICollection<ProjectDto>? GetProject(
+        int employeeCode, int page = 1) =>
+        ProjectMapping.Mapping(PagedList<Project>
+            .Create(_dbContext.EmployeeProjects
+            .Where(x => x.Employee.EmployeeCode == employeeCode)
+            .Select(x => x.Project).ToList(), page))
+        !.ToList();
+    public async Task<ICollection<ProjectDto>>? GetProjectsAsync(
+        int employeeCode, int page = 1) =>
+        ProjectMapping.Mapping(PagedList<Project>
+            .Create(await _dbContext.EmployeeProjects
+            .Where(x => x.Employee.EmployeeCode == employeeCode)
+            .Select(x => x.Project).ToListAsync(), page))
+        !.ToList();
 
-    public ICollection<Employee>? GetSubEmployees(int employeeCode) =>
-        _dbContext.Employees
-        .Where(x => x.HeadManager!.EmployeeCode == employeeCode)
-        .ToList();
-    public async Task<ICollection<Employee>>? GetSubEmployeesAsync(int employeeCode) =>
-        await _dbContext.Employees
-        .Where(x => x.HeadManager!.EmployeeCode == employeeCode)
-        .ToListAsync();
+    public ICollection<EmployeeDto>? GetSubEmployees(
+        int employeeCode, int page = 1) =>
+        EmployeeMapping.Mapping(PagedList<Employee>
+            .Create(_dbContext.Employees.Include(x => x.Department)
+            .Include(x => x.Department)
+            .Where(x => x.HeadManager!.EmployeeCode == employeeCode)
+            .ToList(), page))
+        !.ToList();
+
+    public async Task<ICollection<EmployeeDto>>? GetSubEmployeesAsync(
+        int employeeCode, int page = 1) =>
+        EmployeeMapping.Mapping(PagedList<Employee>
+            .Create(await _dbContext.Employees.Include(x => x.Department)
+            .Where(x => x.HeadManager!.EmployeeCode == employeeCode)
+            .ToListAsync(), page))
+        !.ToList();
 
     public bool ParticipatesInProject(string projectCode, int employeeCode) =>
-        new EmployeeProjectsRepository(_dbContext)
+        new EmployeeProjectRepository(_dbContext)
         .ParticipatesInProject(projectCode, employeeCode);
-
     public async Task<bool> ParticipatesInProjectAsync(string projectCode,
         int employeeCode) =>
-        await new EmployeeProjectsRepository(_dbContext)
+        await new EmployeeProjectRepository(_dbContext)
         .ParticipatesInProjectAsync(projectCode, employeeCode);
+
     #endregion BasicQueries
 
     #region CRUD
-
     public bool Save() =>
         _dbContext.SaveChanges() > 0 ? true : false;
 
     public async Task<bool> SaveAsync() =>
         await _dbContext.SaveChangesAsync() > 0 ? true : false;
 
-    public bool CreateEmployee(Employee employee)
+    public bool CreateEmployee(EmployeeDto employeeDto)
     {
-        _validator.ValidateAndThrow(employee);
+        if (employeeDto == null)
+            return false;
+
+        var employee = EmployeeMapping.Mapping(employeeDto);
+        employee!.Department = _dbContext.Departments
+            .First(x => x.SubdivisionCode == employeeDto.DepartmentCode);
+        employee!.IdDepartment = _dbContext.Departments
+            .First(x => x.SubdivisionCode == employeeDto.DepartmentCode).Id;
+
         _dbContext.Employees.Add(employee);
         return Save();
     }
 
-    public async Task<bool> CreateEmployeeAsync(Employee employee)
+    public async Task<bool> CreateEmployeeAsync(EmployeeDto employeeDto)
     {
-        await _validator.ValidateAndThrowAsync(employee);
+        if (employeeDto == null)
+            return false;
+
+        var employee = EmployeeMapping.Mapping(employeeDto);
+        employee!.Department = _dbContext.Departments
+            .First(x => x.SubdivisionCode == employeeDto.DepartmentCode);
+        employee!.IdDepartment = _dbContext.Departments
+            .First(x => x.SubdivisionCode == employeeDto.DepartmentCode).Id;
         await _dbContext.Employees.AddAsync(employee);
         return await SaveAsync();
     }
@@ -122,21 +150,30 @@ public class EmployeeRepository : IEmployee
             .FirstOrDefaultAsync(x => x.EmployeeCode == employeeCode);
         if (employee == null)
             return false;
+
         _dbContext.Employees.Remove(employee);
         return await SaveAsync();
     }
 
-    public bool UpdateEmployee(Employee employee)
+    public bool UpdateEmployee(EmployeeDto employeeDto)
     {
-        _validator.ValidateAndThrow(employee);
+        var employee = EmployeeMapping.Mapping(employeeDto);
+        employee!.Department = _dbContext.Departments
+            .First(x => x.SubdivisionCode == employeeDto.DepartmentCode);
+        employee!.IdDepartment = _dbContext.Departments
+            .First(x => x.SubdivisionCode == employeeDto.DepartmentCode).Id;
 
         _dbContext.Employees.Update(employee);
         return Save();
     }
 
-    public async Task<bool> UpdateEmployeeAsync(Employee employee)
+    public async Task<bool> UpdateEmployeeAsync(EmployeeDto employeeDto)
     {
-        await _validator.ValidateAndThrowAsync(employee);
+        var employee = EmployeeMapping.Mapping(employeeDto);
+        employee!.Department = _dbContext.Departments
+            .First(x => x.SubdivisionCode == employeeDto.DepartmentCode);
+        employee!.IdDepartment = _dbContext.Departments
+            .First(x => x.SubdivisionCode == employeeDto.DepartmentCode).Id;
 
         _dbContext.Employees.Update(employee);
         return await SaveAsync();

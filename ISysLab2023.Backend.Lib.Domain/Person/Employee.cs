@@ -59,7 +59,7 @@ public class Employee : BasePerson
     /// <summary>
     /// Id of the department in which the person works
     /// </summary>
-    public string IdDepartment { get; set; } = String.Empty;
+    public Guid IdDepartment { get; set; } = new();
     /// <summary>
     /// Link of the department in which the person works
     /// </summary>

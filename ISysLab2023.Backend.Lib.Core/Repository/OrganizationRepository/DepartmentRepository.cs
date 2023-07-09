@@ -1,6 +1,10 @@
 ﻿using FluentValidation;
 using ISysLab2023.Backend.Lib.Core.IService.IOrganization;
-using ISysLab2023.Backend.Lib.Core.Validator.OrganizationValidator;
+using ISysLab2023.Backend.Lib.Core.ModelDto.OrganizationDto;
+using ISysLab2023.Backend.Lib.Core.ModelDto.PersonDto;
+using ISysLab2023.Backend.Lib.Core.MyMapping.OrganizationMapping;
+using ISysLab2023.Backend.Lib.Core.MyMapping.PersonMapping;
+using ISysLab2023.Backend.Lib.Core.Service;
 using ISysLab2023.Backend.Lib.DataBase.DBContext;
 using ISysLab2023.Backend.Lib.Domain.Organization;
 using ISysLab2023.Backend.Lib.Domain.Person;
@@ -14,69 +18,83 @@ namespace ISysLab2023.Backend.Lib.Core.Repository.OrganizationRepository;
 public class DepartmentRepository : IDepartment
 {
     private readonly DataBaseContext _dbContext;
-    private readonly DepartmentValidator _validator;
-    public DepartmentRepository(DataBaseContext dbContext,
-        DepartmentValidator validator)
+    public DepartmentRepository(DataBaseContext dbContext)
     {
         _dbContext = dbContext;
-        _validator = validator;
     }
 
     #region BasicQueries
     public bool DepartmentExists(string subdivisionCode) =>
         _dbContext.Departments
-        .FirstOrDefault(x => x.SubdivisionCode == subdivisionCode) == null ?
-        false : true;
+        .FirstOrDefault(x => x.SubdivisionCode == subdivisionCode) ==
+        null ? false : true;
 
-    public async Task<bool> DepartmentExistsAsync(string subdivisionCode) =>
+    public async Task<bool> DepartmentExistsAsync(
+        string subdivisionCode) =>
         await _dbContext.Departments
-        .FirstOrDefaultAsync(x => x.SubdivisionCode == subdivisionCode) == null ?
-        false : true;
+        .FirstOrDefaultAsync(x => x.SubdivisionCode == subdivisionCode) ==
+        null ? false : true;
 
-    public Department? GetDepartmentByCode(string subdivisionCode) =>
-        _dbContext.Departments
-        .FirstOrDefault(x => x.SubdivisionCode == subdivisionCode);
+    public DepartmentDto? GetDepartmentByCode(
+        string subdivisionCode) =>
+        DepartmentMapping.Mapping(_dbContext.Departments
+        .FirstOrDefault(x => x.SubdivisionCode == subdivisionCode));
 
-    public async Task<Department>? GetDepartmentByCodeAsync(string subdivisionCode) =>
-        await _dbContext.Departments
-        .FirstOrDefaultAsync(x => x.SubdivisionCode == subdivisionCode);
+    public async Task<DepartmentDto>? GetDepartmentByCodeAsync(
+        string subdivisionCode) =>
+        DepartmentMapping.Mapping(await _dbContext.Departments
+        .FirstOrDefaultAsync(x => x.SubdivisionCode == subdivisionCode));
 
-    public ICollection<Department>? GetDepartments() =>
-        _dbContext.Departments.ToList();
+    public ICollection<DepartmentDto>? GetDepartments(
+        int page = 1) =>
+        DepartmentMapping.Mapping(PagedList<Department>
+            .Create(_dbContext.Departments.ToList(), page))
+            !.ToList();
 
-    public async Task<ICollection<Department>>? GetDepartmentsAsync() =>
-        await _dbContext.Departments.ToListAsync();
+    public async Task<ICollection<DepartmentDto>>? GetDepartmentsAsync(
+        int page = 1) =>
+    DepartmentMapping.Mapping(PagedList<Department>
+        .Create(await _dbContext.Departments.ToListAsync(), page))
+        !.ToList();
 
-    public ICollection<Employee>? GetEmployees(string subdivisionCode) =>
-        _dbContext.Employees
-        .Where(x => x.Department.SubdivisionCode == subdivisionCode)
-        .ToList();
+    public ICollection<EmployeeDto>? GetEmployees(
+        string subdivisionCode, int page = 1) =>
+        EmployeeMapping.Mapping(PagedList<Employee>
+        .Create(_dbContext.Employees.Include(x => x.Department)
+            .Where(x => x.Department.SubdivisionCode == subdivisionCode)
+            .ToList(), page))
+        !.ToList();
 
-    public async Task<ICollection<Employee>>? GetEmployeesAsync(string subdivisionCode) =>
-        await _dbContext.Employees
-        .Where(x => x.Department.SubdivisionCode == subdivisionCode)
-        .ToListAsync();
+    public async Task<ICollection<EmployeeDto>>? GetEmployeesAsync(
+        string subdivisionCode, int page = 1) =>
+        EmployeeMapping.Mapping(PagedList<Employee>
+            .Create(await _dbContext.Employees.Include(x => x.Department)
+            .Where(x => x.Department.SubdivisionCode == subdivisionCode)
+            .ToListAsync(), page))
+        !.ToList();
+
+
     #endregion BasicQueries
 
     #region CRUD
-
     public bool Save() =>
         _dbContext.SaveChanges() > 0 ? true : false;
 
     public async Task<bool> SaveAsync() =>
         await _dbContext.SaveChangesAsync() > 0 ? true : false;
 
-    public bool CreateDepartment(Department department)
+    public bool CreateDepartment(DepartmentDto department)
     {
-        _validator.ValidateAndThrow(department);
-        _dbContext.Departments.Add(department);
+        _dbContext.Departments
+            .Add(DepartmentMapping.Mapping(department));
         return Save();
     }
 
-    public async Task<bool> CreateDepartmentAsync(Department department)
+    public async Task<bool> CreateDepartmentAsync(
+        DepartmentDto department)
     {
-        await _validator.ValidateAndThrowAsync(department);
-        await _dbContext.Departments.AddAsync(department);
+        await _dbContext.Departments
+            .AddAsync(DepartmentMapping.Mapping(department));
         return await SaveAsync();
     }
 
@@ -90,7 +108,8 @@ public class DepartmentRepository : IDepartment
         return Save();
     }
 
-    public async Task<bool> DeleteDepartmentAsync(string subdivisionCode)
+    public async Task<bool> DeleteDepartmentAsync(
+        string subdivisionCode)
     {
         var department = await _dbContext.Departments
             .FirstOrDefaultAsync(x => x.SubdivisionCode == subdivisionCode);
@@ -100,20 +119,18 @@ public class DepartmentRepository : IDepartment
         return await SaveAsync();
     }
 
-    // TODO Dto Model provides a new model without Id.
-    // And the system cannot update a model with a different Id.
-    // I don't know how to do it :(
-    public bool UpdateDepartment(Department department)
+    public bool UpdateDepartment(DepartmentDto department)
     {
-        _validator.ValidateAndThrow(department);
-        _dbContext.Departments.Update(department);
+        _dbContext.Departments
+            .Update(DepartmentMapping.Mapping(department));
         return Save();
     }
 
-    public async Task<bool> UpdateDepartmentAsync(Department department)
+    public async Task<bool> UpdateDepartmentAsync(
+        DepartmentDto department)
     {
-        await _validator.ValidateAndThrowAsync(department);
-        _dbContext.Departments.Update(department);
+        _dbContext.Departments
+            .Update(DepartmentMapping.Mapping(department));
         return await SaveAsync();
     }
     #endregion CRUD

@@ -4,15 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>C:\Users\HOME\source\repos\ISysLab2023.Backend\ISysLab2023.Backend.Lib.Domain\bin\Debug\DomainDocumentation.xml</DocumentationFile>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="docfx.console" Version="2.59.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 
 </Project>

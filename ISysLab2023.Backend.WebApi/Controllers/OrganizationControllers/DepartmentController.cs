@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using ISysLab2023.Backend.Lib.Core.IService.IOrganization;
+﻿using ISysLab2023.Backend.Lib.Core.IService.IOrganization;
+using ISysLab2023.Backend.Lib.Core.ModelDto.OrganizationDto;
+using ISysLab2023.Backend.Lib.Core.ModelDto.PersonDto;
 using ISysLab2023.Backend.Lib.Domain.Organization;
-using ISysLab2023.Backend.WebApi.ModelsDto.OrganizationDto;
-using ISysLab2023.Backend.WebApi.ModelsDto.PersonDto;
-using ISysLab2023.Backend.WebApi.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISysLab2023.Backend.WebApi.Controllers.OrganizationControllers;
@@ -16,20 +14,17 @@ namespace ISysLab2023.Backend.WebApi.Controllers.OrganizationControllers;
 public class DepartmentController : Controller
 {
     private readonly IDepartment _repository;
-    private readonly IMapper _mapper;
     private readonly ILogger<Department> _logger;
 
     /// <summary>
     /// Public constructor to create a controller 
     /// </summary>
     /// <param name="repository">Interface repository</param>
-    /// <param name="mapper">Interface mapper</param>
     /// <param name="logger">Interface logger</param>
     public DepartmentController(IDepartment repository,
-        IMapper mapper, ILogger<Department> logger)
+        ILogger<Department> logger)
     {
         _repository = repository;
-        _mapper = mapper;
         _logger = logger;
     }
 
@@ -41,10 +36,9 @@ public class DepartmentController : Controller
     /// <param name="pageNumber">Page number, by default 1</param>
     /// <returns>List Department Dto model</returns>
     [HttpGet("GetDepartments")]
-    public IEnumerable<DepartmentDto> GetDepartments(int? pageNumber) =>
-        PagedList<DepartmentDto>.Create(
-            _mapper.Map<List<DepartmentDto>>(_repository.GetDepartments()),
-            pageNumber ?? 1);
+    public IEnumerable<DepartmentDto>? GetDepartments(
+        int? pageNumber) =>
+        _repository.GetDepartments(pageNumber ?? 1);
 
     /// <summary>
     /// Get All Departments Async on pages. 
@@ -52,10 +46,9 @@ public class DepartmentController : Controller
     /// <param name="pageNumber">Page number, by default 1</param>
     /// <returns>List Department Dto model</returns>
     [HttpGet("GetDepartmentsAsync")]
-    public async Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync(int? pageNumber) =>
-        PagedList<DepartmentDto>.Create(
-        _mapper.Map<List<DepartmentDto>>(await _repository.GetDepartmentsAsync()),
-        pageNumber ?? 1);
+    public async Task<IEnumerable<DepartmentDto>>? GetDepartmentsAsync(
+        int? pageNumber) =>
+        await _repository.GetDepartmentsAsync(pageNumber ?? 1);
 
     /// <summary>
     /// Get department by code
@@ -63,8 +56,9 @@ public class DepartmentController : Controller
     /// <param name="code">code depatment</param>
     /// <returns>Department Dto model</returns>
     [HttpGet("GetDepartmentByCode/{code}")]
-    public DepartmentDto GetDepartmentByCode(string code) =>
-        _mapper.Map<DepartmentDto>(_repository.GetDepartmentByCode(code));
+    public DepartmentDto? GetDepartmentByCode(string code) =>
+        _repository.GetDepartmentByCode(code);
+
 
     /// <summary>
     /// Get department by code Async
@@ -72,9 +66,9 @@ public class DepartmentController : Controller
     /// <param name="code">code department</param>
     /// <returns>Department Dto model</returns>
     [HttpGet("GetDepartmentByCodeAsync/{code}")]
-    public async Task<DepartmentDto> GetDepartmentByCodeAsync(string code) =>
-        _mapper.Map<DepartmentDto>
-        (await _repository.GetDepartmentByCodeAsync(code));
+    public async Task<DepartmentDto>? GetDepartmentByCodeAsync(
+        string code) =>
+        await _repository.GetDepartmentByCodeAsync(code);
 
     /// <summary>
     ///  Get All Employees of department page by page;
@@ -83,11 +77,9 @@ public class DepartmentController : Controller
     /// <param name="pageNumber">Page number, by default 1</param>
     /// <returns>List Employee Dto model</returns>
     [HttpGet("GetDepartmentEmployees/{code}/employees")]
-    public IEnumerable<EmployeeDto> GetDepartmentEmployees
+    public IEnumerable<EmployeeDto>? GetDepartmentEmployees
         (string code, int? pageNumber) =>
-        PagedList<EmployeeDto>.Create(
-        _mapper.Map<List<EmployeeDto>>(_repository.GetEmployees(code)),
-        pageNumber ?? 1);
+        _repository.GetEmployees(code, pageNumber ?? 1);
 
     /// <summary>
     ///  Get All Employees of department page by page Async;
@@ -96,11 +88,9 @@ public class DepartmentController : Controller
     /// <param name="pageNumber">Page number, by default 1</param>
     /// <returns>List Employee Dto model</returns>
     [HttpGet("GetDepartmentEmployeesAsync/{code}/employees")]
-    public async Task<IEnumerable<EmployeeDto>> GetDepartmentEmployeesAsync
-        (string code, int? pageNumber) =>
-        PagedList<EmployeeDto>.Create(
-        _mapper.Map<List<EmployeeDto>>(await _repository.GetEmployeesAsync(code)),
-        pageNumber ?? 1);
+    public async Task<IEnumerable<EmployeeDto>>? GetDepartmentEmployeesAsync(
+        string code, int? pageNumber) =>
+        await _repository.GetEmployeesAsync(code, pageNumber ?? 1);
 
     #endregion BasicQueries
 
@@ -120,8 +110,7 @@ public class DepartmentController : Controller
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method CreateDepartment");
 
-        var department = _mapper.Map<Department>(departmentDto);
-        if (!_repository.CreateDepartment(department))
+        if (!_repository.CreateDepartment(departmentDto))
         {
             ModelState.AddModelError("", "Something went wrong while savin");
             return StatusCode(500, ModelState);
@@ -144,8 +133,7 @@ public class DepartmentController : Controller
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method CreateDepartmentAsync");
 
-        var department = _mapper.Map<Department>(departmentDto);
-        if (!await _repository.CreateDepartmentAsync(department))
+        if (!await _repository.CreateDepartmentAsync(departmentDto))
         {
             ModelState.AddModelError("", "Something went wrong while savin");
             return StatusCode(500, ModelState);
@@ -168,7 +156,8 @@ public class DepartmentController : Controller
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method DeleteDepartment");
 
-        if (!_repository.DeleteDepartment(subdivisionCode) || !ModelState.IsValid)
+        if (!_repository.DeleteDepartment(subdivisionCode)
+            || !ModelState.IsValid)
         {
             ModelState.AddModelError("",
                 "Something went wrong deleting institution");
@@ -219,12 +208,12 @@ public class DepartmentController : Controller
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method UpdateDepartment");
 
-        var department = _mapper.Map<Department>(departmentDto);
-        if (!_repository.UpdateDepartment(department))
+        if (!_repository.UpdateDepartment(departmentDto))
         {
             ModelState.AddModelError("", "Something went wrong while savin");
             return StatusCode(500, ModelState);
         }
+
         return Ok("Successfully updated");
     }
 
@@ -243,8 +232,7 @@ public class DepartmentController : Controller
         _logger.LogInformation($"ModelState {ModelState}, " +
             $"method UpdateDepartmentAsync");
 
-        var department = _mapper.Map<Department>(departmentDto);
-        if (!await _repository.UpdateDepartmentAsync(department))
+        if (!await _repository.UpdateDepartmentAsync(departmentDto))
         {
             ModelState.AddModelError("", "Something went wrong while savin");
             return StatusCode(500, ModelState);

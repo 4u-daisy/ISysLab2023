@@ -1,7 +1,7 @@
-﻿namespace ISysLab2023.Backend.WebApi.ModelsDto.WorkingProjectDto;
-
+﻿namespace ISysLab2023.Backend.Lib.Core.ModelDto.WorkingProjectDto;
 public class ProjectDto
 {
+    public Guid Id { get; set; } = new();
     /// <summary>
     /// Name of department
     /// </summary>

@@ -12,7 +12,7 @@ public class BasePerson
     /// Represents Guid
     /// </summary>
     [Required]
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public Guid Id { get; set; } = new();
 
     /// <summary>
     /// Name of the person

@@ -1,36 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ISysLab2023.Backend.Lib.Domain.Person;
+using System.ComponentModel.DataAnnotations;
 
-namespace ISysLab2023.Backend.WebApi.ModelsDto.PersonDto;
-
-/// <summary>
-/// Employee's job status
-/// </summary>
-public enum Status
-{
-    /// <summary>
-    /// Actively working
-    /// </summary>
-    Active,
-    /// <summary>
-    /// On vacation
-    /// </summary>
-    Vacation,
-    /// <summary>
-    /// Employee is fired
-    /// </summary>
-    Fired,
-    /// <summary>
-    /// An employee is sick.
-    /// </summary>
-    SickLeave,
-    /// <summary>
-    /// The employee is on maternity leave
-    /// </summary>
-    MaternityLeave
-}
-
+namespace ISysLab2023.Backend.Lib.Core.ModelDto.PersonDto;
 public class EmployeeDto
 {
+    public Guid Id { get; set; } = new();
     /// <summary>
     /// Name of the person
     /// </summary>
