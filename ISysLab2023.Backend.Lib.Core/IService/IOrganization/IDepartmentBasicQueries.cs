@@ -14,8 +14,10 @@ public interface IDepartmentBasicQueries
     bool DepartmentExists(string subdivisionCode);
     Task<bool> DepartmentExistsAsync(string subdivisionCode);
 
-    ICollection<EmployeeDto>? GetEmployees(string subdivisionCode, int page = 1);
-    Task<ICollection<EmployeeDto>>? GetEmployeesAsync(string subdivisionCode, int page = 1);
+    ICollection<EmployeeDto>? GetEmployees(string subdivisionCode,
+        int page = 1);
+    Task<ICollection<EmployeeDto>>? GetEmployeesAsync(
+        string subdivisionCode, int page = 1);
     #endregion BasicQueries
 
 }

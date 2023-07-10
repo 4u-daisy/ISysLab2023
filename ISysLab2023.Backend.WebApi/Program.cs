@@ -1,7 +1,9 @@
+using ISysLab2023.Backend.Lib.Core.IService.ILoadData;
 using ISysLab2023.Backend.Lib.Core.IService.IOrganization;
 using ISysLab2023.Backend.Lib.Core.IService.IPerson;
 using ISysLab2023.Backend.Lib.Core.IService.ISupportClasses;
 using ISysLab2023.Backend.Lib.Core.IService.IWorkingProject;
+using ISysLab2023.Backend.Lib.Core.Repository.LoadDataRepository;
 using ISysLab2023.Backend.Lib.Core.Repository.OrganizationRepository;
 using ISysLab2023.Backend.Lib.Core.Repository.PersonRepository;
 using ISysLab2023.Backend.Lib.Core.Repository.SupportClassesRepository;
@@ -16,8 +18,7 @@ using System.Reflection;
 // 2. normal summary
 // 3. data annotation for controllers (with result codes)
 // 5. go to postgre
-
-// валидация на контроллеры
+// 6. add validation to controllers
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +36,9 @@ builder.Services
     .AddScoped<IDepartment, DepartmentRepository>()
     .AddScoped<IEmployee, EmployeeRepository>()
     .AddScoped<IProject, ProjectRepository>()
-    .AddScoped<IEmployeeProject, EmployeeProjectRepository>();
+    .AddScoped<IEmployeeProject, EmployeeProjectRepository>()
+    .AddScoped<IExportDataJson, ExportDataRepository>()
+    .AddScoped<IImportData, ImportDataRepositiry>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

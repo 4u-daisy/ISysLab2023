@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using ISysLab2023.Backend.Lib.Core.IService.IOrganization;
+﻿using ISysLab2023.Backend.Lib.Core.IService.IOrganization;
 using ISysLab2023.Backend.Lib.Core.ModelDto.OrganizationDto;
 using ISysLab2023.Backend.Lib.Core.ModelDto.PersonDto;
 using ISysLab2023.Backend.Lib.Core.MyMapping.OrganizationMapping;

@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using ISysLab2023.Backend.Lib.Core.IService.IPerson;
+﻿using ISysLab2023.Backend.Lib.Core.IService.IPerson;
 using ISysLab2023.Backend.Lib.Core.ModelDto.PersonDto;
 using ISysLab2023.Backend.Lib.Core.ModelDto.WorkingProjectDto;
 using ISysLab2023.Backend.Lib.Core.MyMapping.PersonMapping;

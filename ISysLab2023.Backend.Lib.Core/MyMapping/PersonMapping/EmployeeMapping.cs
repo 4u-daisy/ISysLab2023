@@ -2,6 +2,9 @@
 using ISysLab2023.Backend.Lib.Domain.Person;
 
 namespace ISysLab2023.Backend.Lib.Core.MyMapping.PersonMapping;
+/// <summary>
+/// Performs mapping of the Employee entity
+/// </summary>
 public static class EmployeeMapping
 {
     public static Employee? Mapping(EmployeeDto? employeeDto) =>
@@ -16,7 +19,7 @@ public static class EmployeeMapping
             Surname = employeeDto.Surname,
             Patronymic = employeeDto.Patronymic,
             Phone = employeeDto.Phone,
-            Status = employeeDto.Status
+            Status = employeeDto.Status,
         };
 
     public static EmployeeDto? Mapping(Employee? employee) =>
